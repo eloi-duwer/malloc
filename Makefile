@@ -19,6 +19,9 @@ SOFTLINK = libft_malloc.so
 TEST_NAME = test_malloc
 
 SRC_LIB = malloc.c \
+	shift.c \
+	free.c \
+	mmap_zones.c \
 
 SRC_TEST = tests/test.c \
 
