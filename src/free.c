@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/13 01:40:02 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/15 03:48:09 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/16 01:21:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	check_zone_freeable(t_zone **zones)
 	free_zone(zones);
 }
 
-static void	mutexed_free(void *ptr)
+void	mutexed_free(void *ptr)
 {
 	t_zone	*zones[2];
 	t_block	*blocks[2];
@@ -71,7 +71,7 @@ static void	mutexed_free(void *ptr)
 		return;
 	}
 	blocks[0]->free = true;
-	if (blocks[0]->next != NULL && blocks[0]->free == true)
+	if (blocks[0]->next != NULL && blocks[0]->next->free == true)
 	{
 		blocks[0]->size += blocks[0]->next->size + sizeof(t_block);
 		blocks[0]->next = blocks[0]->next->next;
@@ -90,5 +90,5 @@ void	free(void *ptr)
 		return;
 	pthread_mutex_lock(&g_mutex);
 	mutexed_free(ptr);
-	pthread_mutex_unlock(&g_mutex);	
+	pthread_mutex_unlock(&g_mutex);
 }

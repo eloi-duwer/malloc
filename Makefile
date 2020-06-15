@@ -23,12 +23,13 @@ SRC_LIB = free.c \
 	mmap_zones.c \
 	realloc.c \
 	shift.c \
+	show_alloc_mem.c \
 
 SRC_TEST = tests/test.c \
 
 CC = gcc
 
-CFLAGS = -I./include -I./libft/include -Wall -Wextra -fpic
+CFLAGS = -I./include -I./libft/include -Wall -Wextra -fpic -g
 
 SRCF = ./src/
 
@@ -43,7 +44,7 @@ LFT = libft/libft.a
 all : $(NAME)
 
 $(NAME) : $(LFT) $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS)
+	$(CC) -shared -o $(NAME) $(OBJS) $(LFT) -g
 	@rm -rf $(SOFTLINK)
 	ln -s $(NAME) $(SOFTLINK)
 
@@ -67,8 +68,8 @@ re : fclean all
 
 $(OBJF_TESTS)%.o : $(SRCF)%.c
 	@mkdir -p $(@D)
-	$(CC) -o $@ -I./libft/include -Wall -Wextra -c $(addprefix $(SRCF), $*.c)
+	$(CC) -o $@ -I ./include -I./libft/include -Wall -Wextra -c $(addprefix $(SRCF), $*.c) -g
 
 
 test: $(NAME) $(OBJS_TESTS)
-	$(CC) -o $(TEST_NAME) -Wall -Wextra $(OBJS_TESTS) -L. -lft_malloc -L./libft/ -lft -Wl,-rpath=.
+	$(CC) -o $(TEST_NAME) -Wall -Wextra $(OBJS_TESTS) -L. -lft_malloc -L./libft/ -lft -Wl,-rpath=. -g

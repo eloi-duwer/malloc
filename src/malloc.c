@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:13 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/14 17:25:38 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/16 01:21:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,13 @@ t_bool	claim_block(size_t size, t_zone *zone, t_block **ret_block)
 				next = (t_block *)((void *)ptr + sizeof(t_block) + size);
 				next->free = true;
 				next->size = ptr->size - sizeof(t_block) - size;
+				next->next = NULL;
 				ptr->next = next;
+				ptr->size = size;
 			}
 			else
 				ptr->next = NULL;
 			ptr->free = false;
-			ptr->size = size;
 			*ret_block = ptr;
 			return (true);
 		}
@@ -47,23 +48,23 @@ t_bool	claim_block(size_t size, t_zone *zone, t_block **ret_block)
 void	find_or_create_tiny_small_block(t_type type, size_t size, \
 			t_zone **zone, t_block **block) 
 {
-	t_zone	*ptr;
-
-	ptr = g_zones;
-	while (ptr != NULL)
+	*zone = g_zones;
+	while (*zone != NULL)
 	{
-		if (ptr->type == type && claim_block(size, ptr, block) == true)
+		if ((*zone)->type == type && claim_block(size, *zone, block) == true)
 			return;
-		ptr = ptr->next;
+		*zone = (*zone)->next;
 	}
-	*zone = mmap_tiny_small_zone(type, block);
+	if ((*zone = mmap_tiny_small_zone(type, block)) == NULL)
+		return;
+	claim_block(size, *zone, block);
 }
 
 void	get_zone_and_block(size_t size, t_zone **zone, t_block **block)
 {
 	if (size > SMALL_BLOC_BYTES)
 		*zone = mmap_large_zone(size);
-	else if (size < TINY_BLOC_BYTES)
+	else if (size <= TINY_BLOC_BYTES)
 		find_or_create_tiny_small_block(TINY, size, zone, block);
 	else
 		find_or_create_tiny_small_block(SMALL, size, zone, block);
@@ -88,10 +89,21 @@ void	*mutexed_malloc(size_t size)
 
 void	*malloc(size_t size)
 {
-	void *ptr;
+	void	*ret;
 
 	pthread_mutex_lock(&g_mutex);
-	ptr = mutexed_malloc(size);
-	pthread_mutex_unlock(&g_mutex);	
-	return (ptr);
+	ret = mutexed_malloc(size);
+	pthread_mutex_unlock(&g_mutex);
+	return (ret);
+}
+
+void	*calloc(size_t n, size_t size)
+{
+	void	*ret;
+
+	pthread_mutex_lock(&g_mutex);
+	ret = mutexed_malloc(n * size);
+	pthread_mutex_unlock(&g_mutex);
+	ft_bzero(ret, n * size);
+	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 22:03:35 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/13 01:59:02 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/15 20:45:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ t_zone			*mmap_tiny_small_zone(t_type type, t_block **block_ptr)
 	if (ret == MAP_FAILED)
 		return (NULL);
 	ret->next = NULL;
-	ret->type = TINY;
+	ret->type = type;
 	ret->size = size;
 	block = (t_block *)shift_zone(ret);
 	block->size = size - sizeof(t_zone) - sizeof(t_block);

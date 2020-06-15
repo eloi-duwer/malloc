@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:05 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/14 17:33:05 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/16 01:32:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 # include <unistd.h>
 # define false 0
 # define true 1
-# define TINY_BLOC_BYTES 128
-# define SMALL_BLOC_BYTES 4096 
+# define TINY_BLOC_BYTES 0
+# define SMALL_BLOC_BYTES 0
 
 typedef char	t_bool;
 
@@ -46,12 +46,17 @@ extern t_zone			*g_zones;
 extern pthread_mutex_t	g_mutex;
 
 void	*malloc(size_t size);
+void	*calloc(size_t n, size_t size);
 void	free(void *ptr);
 void	*realloc(void *ptr, size_t size);
+void	show_alloc_mem(void);
+void	*mutexed_malloc(size_t size);
+void	mutexed_free(void *ptr);
 void	*shift_block(t_block *block);
 void	*shift_zone(t_zone *zone);
 t_zone	*mmap_large_zone(size_t size);
 t_zone	*mmap_tiny_small_zone(t_type type, t_block **block);
 t_bool	find_block(void *ptr, t_zone **ret_zone, t_block **ret_block);
+void	put_size_t_nbr(size_t nbr, size_t base);
 
 #endif
