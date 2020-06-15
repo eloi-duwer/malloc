@@ -18,10 +18,11 @@ NAME = libft_malloc_$(HOSTTYPE).so
 SOFTLINK = libft_malloc.so
 TEST_NAME = test_malloc
 
-SRC_LIB = malloc.c \
-	shift.c \
-	free.c \
+SRC_LIB = free.c \
+	malloc.c \
 	mmap_zones.c \
+	realloc.c \
+	shift.c \
 
 SRC_TEST = tests/test.c \
 

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:13 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/13 01:48:15 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/14 17:25:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,3 @@ void	*malloc(size_t size)
 	pthread_mutex_unlock(&g_mutex);	
 	return (ptr);
 }
-
-/*void	*realloc(void *ptr, size_t size)
-{
-	ft_putstr("No realloc 4 u neither\n");
-	return (ptr);
-}*/

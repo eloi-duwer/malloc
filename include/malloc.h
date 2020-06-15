@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:05 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/13 01:06:37 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/14 17:33:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,6 @@ void	*shift_block(t_block *block);
 void	*shift_zone(t_zone *zone);
 t_zone	*mmap_large_zone(size_t size);
 t_zone	*mmap_tiny_small_zone(t_type type, t_block **block);
+t_bool	find_block(void *ptr, t_zone **ret_zone, t_block **ret_block);
 
 #endif

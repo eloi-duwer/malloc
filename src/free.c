@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/13 01:40:02 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/13 03:02:27 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/15 03:48:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,11 @@ t_bool	find_block(void *ptr, t_zone **ret_zone, t_block **ret_block)
 	{
 		ret_block[0] = (t_block *)shift_zone(ret_zone[0]);
 		ret_block[1] = NULL;
+		if ((void *)ret_block[0] == ptr)
+			return (true);
 		while (ret_block[0] != NULL)
 		{
-			if ((void *)(ret_block[0]) == ptr)
+			if (shift_block(ret_block[0]) == ptr)
 				return (true);
 			ret_block[1] = ret_block[0];
 			ret_block[0] = ret_block[0]->next;
@@ -33,14 +35,27 @@ t_bool	find_block(void *ptr, t_zone **ret_zone, t_block **ret_block)
 	return (false);
 }
 
-static void	free_large_zone(t_zone **zones)
+static void	free_zone(t_zone **zones)
 {
-	
+	if (zones[1] != NULL)
+		zones[1]->next = zones[0]->next;
+	else
+		g_zones = zones[0]->next;
+	munmap(zones[0], zones[0]->size);
 }
 
-static void	check_zone_freeable(t_zone **ptr)
+static void	check_zone_freeable(t_zone **zones)
 {
+	t_block	*block;
 
+	block = (t_block *)shift_zone(zones[0]);
+	while (block != NULL)
+	{
+		if (block->free == false)
+			return;
+		block = block->next;
+	}
+	free_zone(zones);
 }
 
 static void	mutexed_free(void *ptr)
@@ -52,7 +67,7 @@ static void	mutexed_free(void *ptr)
 		return;
 	if (zones[0]->type == LARGE)
 	{
-		free_large_zone(zones);
+		free_zone(zones);
 		return;
 	}
 	blocks[0]->free = true;
