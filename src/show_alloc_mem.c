@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/15 18:45:25 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/16 01:31:53 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/17 00:48:46 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,16 @@ size_t			print_block(t_block *ptr)
 	put_size_t_nbr((size_t)(shift_block(ptr) + ptr->size), 16);
 	ft_putstr(" : ");
 	put_size_t_nbr(ptr->size, 10);
-	ft_putstr(" octets (diff: ");
-	put_size_t_nbr((void *)ptr->next - shift_block(ptr), 10);
-	ft_putstr(")\n");
+	ft_putstr(" octets");
+	if (ptr->next && ptr->size != (size_t)((void *)ptr->next - shift_block(ptr)))
+	{
+		ft_putstr(" INCOHERENCE diff = ");
+		put_size_t_nbr((void *)ptr->next - shift_block(ptr), 10);
+		ft_putstr(")");
+	}
+	if (ptr->free)
+		ft_putstr(" (free)");
+	ft_putstr("\n");
 	return (ptr->size);
 }
 
@@ -99,7 +106,7 @@ size_t			print_zone(t_zone *zone)
 	ptr = shift_zone(zone);
 	while (ptr != NULL)
 	{
-		if (ptr->free == false)
+		//if (ptr->free == false)
 			ret += print_block(ptr);
 		ptr = ptr->next;
 	}
@@ -120,4 +127,36 @@ void			show_alloc_mem(void)
 	ft_putstr("Total : ");
 	put_size_t_nbr(total, 10);
 	ft_putstr(" octets\n");
+}
+
+void			check_incoherence(char *provenance)
+{
+	t_zone *zone;
+	t_block	*block;
+
+	zone = g_zones;
+	//ft_putstr("deb\n");
+	while (zone != NULL)
+	{
+		//ft_putstr("coucou\n");
+		if (zone->type != LARGE)
+		{
+			block = shift_zone(zone);
+			while (block != NULL)
+			{
+				//ft_putstr("truc\n");
+				if (block->next != NULL && block->size != (size_t)((void *)block->next - shift_block(block)))
+				{
+					ft_putstr("INCOHERENCE FROM OPERATION ");
+					ft_putstr(provenance);
+					ft_putstr("\nStack:\n");
+					show_alloc_mem();
+					exit(1);
+				}
+				block = block->next;
+			}
+		}
+		zone = zone->next;
+	}
+//	ft_putstr("ret\n");
 }

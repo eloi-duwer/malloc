@@ -44,7 +44,7 @@ LFT = libft/libft.a
 all : $(NAME)
 
 $(NAME) : $(LFT) $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS) $(LFT) -g
+	$(CC) -shared -o $(NAME) $(OBJS) $(LFT) -g -fvar-tracking
 	@rm -rf $(SOFTLINK)
 	ln -s $(NAME) $(SOFTLINK)
 
@@ -53,7 +53,7 @@ $(LFT):
 
 $(OBJF)%.o : $(SRCF)%.c
 	@mkdir -p $(@D)
-	$(CC) -o $@ $(CFLAGS) -c $(addprefix $(SRCF), $*.c)
+	$(CC) -o $@ $(CFLAGS) -c $(addprefix $(SRCF), $*.c) -fvar-tracking
 
 clean :
 	rm -rf	$(OBJS)
@@ -68,8 +68,8 @@ re : fclean all
 
 $(OBJF_TESTS)%.o : $(SRCF)%.c
 	@mkdir -p $(@D)
-	$(CC) -o $@ -I ./include -I./libft/include -Wall -Wextra -c $(addprefix $(SRCF), $*.c) -g
+	$(CC) -o $@ -I ./include -I./libft/include -Wall -Wextra -c $(addprefix $(SRCF), $*.c) -g -fvar-tracking
 
 
 test: $(NAME) $(OBJS_TESTS)
-	$(CC) -o $(TEST_NAME) -Wall -Wextra $(OBJS_TESTS) -L. -lft_malloc -L./libft/ -lft -Wl,-rpath=. -g
+	$(CC) -o $(TEST_NAME) -Wall -Wextra $(OBJS_TESTS) -L. -lft_malloc -L./libft/ -lft -Wl,-rpath=. -g -fvar-tracking

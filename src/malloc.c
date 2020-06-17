@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:13 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/16 01:21:09 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/17 02:09:41 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 t_bool	claim_block(size_t size, t_zone *zone, t_block **ret_block)
 {
-	t_block *ptr;
-	t_block	*next;
+	t_block	*ptr;
+	t_block	buff;
 
 	ptr = (t_block *)shift_zone(zone);
 	while (ptr != NULL)
@@ -27,15 +27,13 @@ t_bool	claim_block(size_t size, t_zone *zone, t_block **ret_block)
 		{
 			if (ptr->size > size + sizeof(t_block))
 			{
-				next = (t_block *)((void *)ptr + sizeof(t_block) + size);
-				next->free = true;
-				next->size = ptr->size - sizeof(t_block) - size;
-				next->next = NULL;
-				ptr->next = next;
+				buff.free = true;
+				buff.size = ptr->size - sizeof(t_block) - size;
+				buff.next = ptr->next;
+				ptr->next = (t_block *)((void *)ptr + sizeof(t_block) + size);
 				ptr->size = size;
+				ft_memcpy(ptr->next, &buff, sizeof(t_block));
 			}
-			else
-				ptr->next = NULL;
 			ptr->free = false;
 			*ret_block = ptr;
 			return (true);
@@ -91,9 +89,14 @@ void	*malloc(size_t size)
 {
 	void	*ret;
 
+	size = (size + 15) & ~15;
+	/*ft_putstr("MALLOC ");
+	ft_putnbr((int)size);
+	ft_putstr("\n");*/
 	pthread_mutex_lock(&g_mutex);
 	ret = mutexed_malloc(size);
 	pthread_mutex_unlock(&g_mutex);
+	//check_incoherence("malloc");
 	return (ret);
 }
 
@@ -101,9 +104,13 @@ void	*calloc(size_t n, size_t size)
 {
 	void	*ret;
 
+	size = (size + 15) & ~15;
+	//ft_putstr("CALLOC\n");
 	pthread_mutex_lock(&g_mutex);
 	ret = mutexed_malloc(n * size);
 	pthread_mutex_unlock(&g_mutex);
 	ft_bzero(ret, n * size);
+	//check_incoherence("calloc");
+	//ft_putstr("END CALLOC\n");
 	return (ret);
 }

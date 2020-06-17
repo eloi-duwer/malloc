@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/13 01:40:02 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/16 01:21:26 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/17 02:09:44 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ t_bool	find_block(void *ptr, t_zone **ret_zone, t_block **ret_block)
 	{
 		ret_block[0] = (t_block *)shift_zone(ret_zone[0]);
 		ret_block[1] = NULL;
-		if ((void *)ret_block[0] == ptr)
+		if ((void *)ret_block[0] == ptr) {
 			return (true);
-		while (ret_block[0] != NULL)
+		}
+		while (ret_zone[0]->type != LARGE && ret_block[0] != NULL)
 		{
 			if (shift_block(ret_block[0]) == ptr)
 				return (true);
@@ -88,7 +89,17 @@ void	free(void *ptr)
 {
 	if (ptr == NULL)
 		return;
+	/*ft_putstr("FREE ");
+	put_size_t_nbr((size_t)ptr, 16);
+	ft_putstr("\n");*/
+	/*show_alloc_mem();
+	ft_putstr("\n\n");*/
 	pthread_mutex_lock(&g_mutex);
 	mutexed_free(ptr);
 	pthread_mutex_unlock(&g_mutex);
+	//check_incoherence("free");
+	/*ft_putstr("\n\n");
+	show_alloc_mem();
+	ft_putstr("\n\n");
+	*///ft_putstr("END FREE\n");
 }

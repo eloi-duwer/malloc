@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/14 17:25:29 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/16 01:21:19 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/17 02:09:34 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ static void	shrink_block(t_block *block, size_t size)
 	{
 		ptr = (t_block *)(shift_block(block) + size);
 		ft_memmove(ptr, block->next, sizeof(t_block));
+		ptr->size += block->size - size;
 		block->next = ptr;
 		block->size = size;
 	}
-	else if (block->size - size - sizeof(t_block) > 0)
+	else if (block->size > size + sizeof(t_block))
 	{
 		ptr = (t_block *)(shift_block(block) + size);
 		ptr->free = true;
@@ -68,7 +69,8 @@ static void	*expand_block_or_malloc(void *ptr, t_block *block, size_t size)
 	{
 		if ((ret = mutexed_malloc(size)) == NULL)
 			return (NULL);
-		ft_memcpy(ret, ptr, block->size);
+		ft_bzero(ret, size);
+		ft_memmove(ret, ptr, block->size);
 		mutexed_free(ptr);
 		return (ret);
 	}
@@ -92,7 +94,7 @@ void		*mutexed_realloc(void *ptr, size_t size)
 		mutexed_free(ptr);
 		return (ret);
 	}
-	else if (size == blocks[0]->size)
+	else if (blocks[0]->size == size)
 		return (ptr);
 	else if (blocks[0]->size > size)
 	{
@@ -100,13 +102,21 @@ void		*mutexed_realloc(void *ptr, size_t size)
 		return (ptr);
 	}
 	else
-		return (expand_block_or_malloc(ptr, blocks[0], size));
+	return (expand_block_or_malloc(ptr, blocks[0], size));
 }
 
 void		*realloc(void *ptr, size_t size)
 {
 	void	*ret;
 
+	size = (size + 15) & ~15;
+	/*ft_putstr("REALLOC ");
+	put_size_t_nbr((size_t)ptr, 16);
+	ft_putstr(": ");
+	put_size_t_nbr(size, 10);
+	ft_putstr(" bytes\n");*/
+	/*if (ptr != NULL)
+		show_alloc_mem();*/
 	if (ptr == NULL)
 		return (malloc(size));
 	if (size == 0)
@@ -117,5 +127,14 @@ void		*realloc(void *ptr, size_t size)
 	pthread_mutex_lock(&g_mutex);
 	ret = mutexed_realloc(ptr, size);
 	pthread_mutex_unlock(&g_mutex);
+	/*if (ptr != NULL)
+	{
+		ft_putstr("\nEND REALLOC ret = ");
+		put_size_t_nbr((size_t)ret, 16);
+		ft_putstr("\n\n");
+		show_alloc_mem();
+		ft_putstr("\n\n");
+	}*/
+	//check_incoherence("realloc");
 	return (ret);
 }
