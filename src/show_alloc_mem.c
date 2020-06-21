@@ -6,30 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/15 18:45:25 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/17 00:48:46 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/21 02:43:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <malloc.h>
-
-static	t_zone	*get_next_zone(t_zone *zone)
-{
-	t_zone	*ret;
-	t_zone	*ptr;
-
-	ret = NULL;
-	ptr = g_zones;
-	while (ptr != NULL)
-	{
-		if (ptr > zone)
-		{
-			if (ret == NULL || ptr < ret)
-				ret = ptr;
-		}
-		ptr = ptr->next;
-	}
-	return (ret);
-}
 
 static char		conv_to_char(size_t n)
 {
@@ -120,8 +101,8 @@ void			show_alloc_mem(void)
 
 	pthread_mutex_lock(&g_mutex);
 	total = 0;
-	zone = (t_zone *)0;
-	while ((zone = get_next_zone(zone)) != NULL)
+	zone = g_zones;
+	while ((zone = zone->next) != NULL)
 		total += print_zone(zone);
 	pthread_mutex_unlock(&g_mutex);
 	ft_putstr("Total : ");
@@ -135,16 +116,13 @@ void			check_incoherence(char *provenance)
 	t_block	*block;
 
 	zone = g_zones;
-	//ft_putstr("deb\n");
 	while (zone != NULL)
 	{
-		//ft_putstr("coucou\n");
 		if (zone->type != LARGE)
 		{
 			block = shift_zone(zone);
 			while (block != NULL)
 			{
-				//ft_putstr("truc\n");
 				if (block->next != NULL && block->size != (size_t)((void *)block->next - shift_block(block)))
 				{
 					ft_putstr("INCOHERENCE FROM OPERATION ");
@@ -158,5 +136,4 @@ void			check_incoherence(char *provenance)
 		}
 		zone = zone->next;
 	}
-//	ft_putstr("ret\n");
 }

@@ -1,3 +1,4 @@
 obj
 test_malloc
 libft_malloc*
+libft_malloc.so

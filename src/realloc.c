@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/14 17:25:29 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/17 02:09:34 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/21 02:50:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	shrink_block(t_block *block, size_t size)
 	{
 		ptr = (t_block *)(shift_block(block) + size);
 		ptr->free = true;
-		ptr->size = block->size - sizeof(t_block) - size;
+		ptr->size = block->size - (sizeof(t_block) + size);
 		ptr->next = block->next;
 		block->size = size;
 		block->next = ptr;
@@ -40,7 +40,7 @@ static void	reduce_next_block(t_block *block, size_t size)
 	t_block *ptr;
 	size_t	next_size;
 
-	if (block->size + block->next->size > size)
+	if (block->size + block->next->size > size + sizeof(t_block))
 	{
 		next_size = block->size + block->next->size - size;
 		ptr = (t_block *)(shift_block(block) + size);
@@ -90,7 +90,7 @@ void		*mutexed_realloc(void *ptr, size_t size)
 			return (ptr);
 		if ((ret = mutexed_malloc(size)) == NULL)
 			return (NULL);
-		ft_memcpy(ret, ptr, zones[0]->size - sizeof(t_zone));
+		ft_memcpy(ret, ptr, zones[0]->size - sizeof(t_zone) - sizeof(t_block));
 		mutexed_free(ptr);
 		return (ret);
 	}
@@ -102,14 +102,14 @@ void		*mutexed_realloc(void *ptr, size_t size)
 		return (ptr);
 	}
 	else
-	return (expand_block_or_malloc(ptr, blocks[0], size));
+		return (expand_block_or_malloc(ptr, blocks[0], size));
 }
 
 void		*realloc(void *ptr, size_t size)
 {
 	void	*ret;
 
-	size = (size + 15) & ~15;
+	//size = (size + 15) & ~15;
 	/*ft_putstr("REALLOC ");
 	put_size_t_nbr((size_t)ptr, 16);
 	ft_putstr(": ");
@@ -117,6 +117,7 @@ void		*realloc(void *ptr, size_t size)
 	ft_putstr(" bytes\n");*/
 	/*if (ptr != NULL)
 		show_alloc_mem();*/
+	check_incoherence("deb realloc");
 	if (ptr == NULL)
 		return (malloc(size));
 	if (size == 0)
@@ -129,12 +130,16 @@ void		*realloc(void *ptr, size_t size)
 	pthread_mutex_unlock(&g_mutex);
 	/*if (ptr != NULL)
 	{
-		ft_putstr("\nEND REALLOC ret = ");
+		ft_putstr("END REALLOC (");
+		put_size_t_nbr((size_t)ptr, 16);
+		ft_putstr(" ");
+		ft_putnbr(size);
+		ft_putstr(") ret = ");
 		put_size_t_nbr((size_t)ret, 16);
-		ft_putstr("\n\n");
-		show_alloc_mem();
-		ft_putstr("\n\n");
-	}*/
-	//check_incoherence("realloc");
+		ft_putstr("\n");
+	}
+	if (ret == NULL)
+		show_alloc_mem();*/
+	check_incoherence("fin realloc");
 	return (ret);
 }
