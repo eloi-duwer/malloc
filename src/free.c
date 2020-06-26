@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/13 01:40:02 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/21 02:50:28 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/27 01:08:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,6 @@ void	mutexed_free(void *ptr)
 
 	if (find_block(ptr, zones, blocks) == false)
 		return;
-	if (zones[0]->type == LARGE)
-	{
-		free_zone(zones);
-		return;
-	}
 	blocks[0]->free = true;
 	if (blocks[0]->next != NULL && blocks[0]->next->free == true)
 	{
@@ -93,18 +88,7 @@ void	free(void *ptr)
 {
 	if (ptr == NULL)
 		return;
-	/*ft_putstr("FREE ");
-	put_size_t_nbr((size_t)ptr, 16);
-	ft_putstr("\n");*/
-	/*show_alloc_mem();
-	ft_putstr("\n\n");*/
-	check_incoherence("deb free");
 	pthread_mutex_lock(&g_mutex);
 	mutexed_free(ptr);
 	pthread_mutex_unlock(&g_mutex);
-	check_incoherence("fin free");
-	/*ft_putstr("\n\n");
-	show_alloc_mem();
-	ft_putstr("\n\n");
-	*///ft_putstr("END FREE\n");
 }

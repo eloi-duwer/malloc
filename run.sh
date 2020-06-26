@@ -1,3 +1,3 @@
 #!/bin/sh
-export LD_PRELOAD=/mnt/c/work/malloc/libft_malloc.so
+export LD_PRELOAD=./libft_malloc.so
 $@

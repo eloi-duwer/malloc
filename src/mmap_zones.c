@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 22:03:35 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/21 02:34:56 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/23 15:24:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 size_t	get_nb_pages(t_type type, size_t size)
 {
 	size_t	bytes_bloc;
+	size_t	ret;
 
 	if (type == LARGE)
 		return (((size + sizeof(t_zone) + sizeof(t_block)) \
@@ -23,8 +24,9 @@ size_t	get_nb_pages(t_type type, size_t size)
 		bytes_bloc = TINY_BLOC_BYTES;
 	else
 		bytes_bloc = SMALL_BLOC_BYTES;
-	return (((bytes_bloc + sizeof(t_block)) * 128 + sizeof(t_zone)) \
+	ret = (((bytes_bloc + sizeof(t_block)) * 128 + sizeof(t_zone)) \
 		/ getpagesize() + 1);
+	return (ret);
 }
 
 static void		append_zone(t_zone *zone)
