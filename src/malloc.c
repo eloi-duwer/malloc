@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:13 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/27 01:16:37 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/27 02:14:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ void	*mutexed_malloc(size_t size)
 	t_zone	*zone;
 	t_block	*block;
 
-	//size = (size + 15) & ~15;
 	if (size == 0)
 		return (NULL);
 	get_zone_and_block(size, &zone, &block);
@@ -102,8 +101,10 @@ void	*mutexed_malloc(size_t size)
 void	*malloc(size_t size)
 {
 	void	*ret;
+	size_t	align;
 
-	size = (size + 1) & ~1;
+	align = get_align();
+	size = (size + align) & ~align;
 	pthread_mutex_lock(&g_mutex);
 	ret = mutexed_malloc(size);
 	pthread_mutex_unlock(&g_mutex);
@@ -113,8 +114,10 @@ void	*malloc(size_t size)
 void	*calloc(size_t n, size_t size)
 {
 	void	*ret;
+	size_t	align;
 
-	size = (size + 1) & ~1;
+	align = get_align();
+	size = (size + align) & ~align;
 	pthread_mutex_lock(&g_mutex);
 	ret = mutexed_malloc(n * size);
 	ft_bzero(ret, n * size);

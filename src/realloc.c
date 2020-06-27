@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/14 17:25:29 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/27 01:16:25 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/27 02:14:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,10 @@ void		*mutexed_realloc(void *ptr, size_t size)
 void		*realloc(void *ptr, size_t size)
 {
 	void	*ret;
+	size_t	align;
 
-	size = (size + 1) & ~1;
+	align = get_align();
+	size = (size + align) & ~align;
 	if (ptr == NULL)
 		return (malloc(size));
 	if (size == 0)

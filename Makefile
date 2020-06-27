@@ -16,7 +16,6 @@ endif
 
 NAME = libft_malloc_$(HOSTTYPE).so
 SOFTLINK = libft_malloc.so
-TEST_NAME = test_malloc
 
 SRC_LIB = free.c \
 	malloc.c \
@@ -25,8 +24,6 @@ SRC_LIB = free.c \
 	shift.c \
 	show_alloc_mem.c \
 
-SRC_TEST = tests/test.c \
-
 CC = gcc
 
 CFLAGS = -I./include -I./libft/include -Wall -Wextra -fpic -g
@@ -34,10 +31,8 @@ CFLAGS = -I./include -I./libft/include -Wall -Wextra -fpic -g
 SRCF = ./src/
 
 OBJF = ./obj/lib/
-OBJF_TESTS = ./obj/tests/
 
 OBJS = $(addprefix $(OBJF), $(SRC_LIB:.c=.o))
-OBJS_TESTS = $(addprefix $(OBJF_TESTS), $(SRC_TEST:.c=.o))
 
 LFT = libft/libft.a
 
@@ -57,19 +52,9 @@ $(OBJF)%.o : $(SRCF)%.c
 
 clean :
 	rm -rf	$(OBJS)
-	rm -rf	$(OBJS_TESTS)
 
 fclean : clean
 	rm -rf $(NAME)
 	rm -rf $(SOFTLINK)
-	rm -rf $(TEST_NAME)
 
 re : fclean all
-
-$(OBJF_TESTS)%.o : $(SRCF)%.c
-	@mkdir -p $(@D)
-	$(CC) -o $@ -I ./include -I./libft/include -Wall -Wextra -c $(addprefix $(SRCF), $*.c) -g
-
-
-test: $(NAME) $(OBJS_TESTS)
-	$(CC) -o $(TEST_NAME) -Wall -Wextra $(OBJS_TESTS) -L. -lft_malloc -L./libft/ -lft -Wl,-rpath=. -g

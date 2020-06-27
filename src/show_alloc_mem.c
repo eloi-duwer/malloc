@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/15 18:45:25 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/27 00:21:47 by marvin           ###   ########.fr       */
+/*   Updated: 2020/06/27 02:09:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ size_t			print_zone(t_zone *zone)
 	ptr = shift_zone(zone);
 	while (ptr != NULL)
 	{
-		//if (ptr->free == false)
+		if (ptr->free == false)
 			ret += print_block(ptr);
 		if (ptr == ptr->next)
 			break;
@@ -94,7 +94,7 @@ void			show_alloc_mem(void)
 	t_zone	*zone;
 	size_t	total;
 
-	//pthread_mutex_lock(&g_mutex);
+	pthread_mutex_lock(&g_mutex);
 	total = 0;
 	zone = g_zones;
 	while (zone != NULL)
@@ -104,7 +104,7 @@ void			show_alloc_mem(void)
 			return ;
 		zone = zone->next;
 	}
-	//pthread_mutex_unlock(&g_mutex);
+	pthread_mutex_unlock(&g_mutex);
 	ft_putstr("Total : ");
 	put_size_t_nbr(total, 10);
 	ft_putstr(" octets\n");
@@ -198,4 +198,9 @@ void	log_print(char *format, ...)
 		}
 	}
 
+}
+
+size_t	get_align(void)
+{
+	return (2 * sizeof(size_t) - 1);
 }
