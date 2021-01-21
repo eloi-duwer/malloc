@@ -23,6 +23,9 @@ SRC_LIB = free.c \
 	realloc.c \
 	shift.c \
 	show_alloc_mem.c \
+	put_size_t_nbr.c \
+	realloc_utils.c \
+	block_control.c
 
 CC = gcc
 

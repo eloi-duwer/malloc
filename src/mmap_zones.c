@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   mmap_zones.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 22:03:35 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/23 15:24:26 by marvin           ###   ########.fr       */
+/*   Updated: 2021/01/21 20:36:24 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <malloc.h>
 
-size_t	get_nb_pages(t_type type, size_t size)
+size_t		get_nb_pages(t_type type, size_t size)
 {
 	size_t	bytes_bloc;
 	size_t	ret;
@@ -29,7 +29,7 @@ size_t	get_nb_pages(t_type type, size_t size)
 	return (ret);
 }
 
-static void		append_zone(t_zone *zone)
+static void	append_zone(t_zone *zone)
 {
 	t_zone	*ptr;
 
@@ -50,7 +50,7 @@ static void		append_zone(t_zone *zone)
 	}
 }
 
-t_zone			*mmap_zone(t_type type, size_t nb_pages, t_block **block_ptr)
+t_zone		*mmap_zone(t_type type, size_t nb_pages, t_block **block_ptr)
 {
 	t_zone	*ret;
 	t_block	*block;

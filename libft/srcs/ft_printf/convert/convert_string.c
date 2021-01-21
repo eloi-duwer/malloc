@@ -6,17 +6,17 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/22 16:31:44 by eduwer            #+#    #+#             */
-/*   Updated: 2020/03/02 18:11:29 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/01/21 20:57:08 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libftprintf.h>
 
-/*static t_printf_state	convert_string_wchart(t_printf_context *ctx)
+static t_printf_state	convert_string_wchart(t_printf_context *ctx)
 {
-	ctx = NULL;
+	(void)ctx;
 	return (error);
-}*/
+}
 
 t_printf_state			convert_string(t_printf_context *ctx)
 {
@@ -25,7 +25,7 @@ t_printf_state			convert_string(t_printf_context *ctx)
 	t_printf_state	ret;
 
 	if (ctx->modifier == m_l)
-		return (/*convert_string_wchart(ctx)*/error);
+		return (convert_string_wchart(ctx));
 	str = va_arg(*(ctx->list), const char *);
 	if (ctx->precision == -1)
 		ctx->precision = ft_strlen(str);

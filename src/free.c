@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/13 01:40:02 by marvin            #+#    #+#             */
-/*   Updated: 2020/06/27 02:14:58 by marvin           ###   ########.fr       */
+/*   Updated: 2021/01/21 20:35:02 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <malloc.h>
 
-t_bool	find_block(void *ptr, t_zone **ret_zone, t_block **ret_block)
+t_bool		find_block(void *ptr, t_zone **ret_zone, t_block **ret_block)
 {
 	if (g_zones == NULL)
 		return (false);
@@ -57,19 +57,19 @@ static void	check_zone_freeable(t_zone **zones)
 	while (block != NULL)
 	{
 		if (block->free == false)
-			return;
+			return ;
 		block = block->next;
 	}
 	free_zone(zones);
 }
 
-void	mutexed_free(void *ptr)
+void		mutexed_free(void *ptr)
 {
 	t_zone	*zones[2];
 	t_block	*blocks[2];
 
 	if (find_block(ptr, zones, blocks) == false)
-		return;
+		return ;
 	blocks[0]->free = true;
 	if (blocks[0]->next != NULL && blocks[0]->next->free == true)
 	{
@@ -84,10 +84,10 @@ void	mutexed_free(void *ptr)
 	check_zone_freeable(zones);
 }
 
-void	free(void *ptr)
+void		free(void *ptr)
 {
 	if (ptr == NULL)
-		return;
+		return ;
 	pthread_mutex_lock(&g_mutex);
 	mutexed_free(ptr);
 	pthread_mutex_unlock(&g_mutex);
