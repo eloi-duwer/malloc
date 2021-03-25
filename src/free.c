@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/13 01:40:02 by marvin            #+#    #+#             */
-/*   Updated: 2021/01/21 20:35:02 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/03/26 00:52:07 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ t_bool		find_block(void *ptr, t_zone **ret_zone, t_block **ret_block)
 	}
 	if (ret_zone[0] == NULL || (void *)ret_zone[0] > ptr)
 	{
-		show_alloc_mem();
 		return (false);
 	}
 	ret_block[0] = (t_block *)shift_zone(ret_zone[0]);
@@ -52,6 +51,7 @@ static void	free_zone(t_zone **zones)
 static void	check_zone_freeable(t_zone **zones)
 {
 	t_block	*block;
+	t_zone	*ptr;
 
 	block = (t_block *)shift_zone(zones[0]);
 	while (block != NULL)
@@ -60,7 +60,17 @@ static void	check_zone_freeable(t_zone **zones)
 			return ;
 		block = block->next;
 	}
-	free_zone(zones);
+	ptr = g_zones;
+	while (ptr != NULL)
+	{
+		if (zones[0]->type == LARGE || \
+			(ptr->type == zones[0]->type && ptr != zones[0]))
+		{
+			free_zone(zones);
+			return ;
+		}
+		ptr = ptr->next;
+	}
 }
 
 void		mutexed_free(void *ptr)

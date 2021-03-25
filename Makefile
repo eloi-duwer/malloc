@@ -29,11 +29,11 @@ SRC_LIB = free.c \
 
 CC = gcc
 
-CFLAGS = -I./include -I./libft/include -Wall -Wextra -fpic -g
+CFLAGS = -I./include -I./libft/include -Wall -Wextra -fpic
 
 SRCF = ./src/
 
-OBJF = ./obj/lib/
+OBJF = ./obj/
 
 OBJS = $(addprefix $(OBJF), $(SRC_LIB:.c=.o))
 
@@ -42,7 +42,7 @@ LFT = libft/libft.a
 all : $(NAME)
 
 $(NAME) : $(LFT) $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS) $(LFT) -g
+	ld -shared -o $(NAME) $(OBJS) $(LFT) --retain-symbols-file symbols.txt
 	@rm -rf $(SOFTLINK)
 	ln -s $(NAME) $(SOFTLINK)
 

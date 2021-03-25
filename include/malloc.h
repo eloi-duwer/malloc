@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:05 by marvin            #+#    #+#             */
-/*   Updated: 2021/01/21 20:58:46 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/03/25 22:54:06 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <pthread.h>
 # include <unistd.h>
 # define TINY_BLOC_BYTES 128
-# define SMALL_BLOC_BYTES 4096
+# define SMALL_BLOC_BYTES 2048
 
 typedef enum			e_bool {
 	false,
