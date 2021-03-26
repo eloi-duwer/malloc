@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/12 21:44:05 by marvin            #+#    #+#             */
-/*   Updated: 2021/03/25 22:54:06 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/03/26 13:30:12 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void					free(void *ptr);
 void					*realloc(void *ptr, size_t size);
 void					*reallocf(void *ptr, size_t size);
 void					show_alloc_mem(void);
+void					show_alloc_mem_ex(void);
+size_t					print_zone(t_zone *zone, t_bool print_mem);
 void					*mutexed_malloc(size_t size);
 void					mutexed_free(void *ptr);
 void					*shift_block(t_block *block);
@@ -62,8 +64,7 @@ t_zone					*mmap_zone(t_type type, size_t nb_pages, \
 t_bool					find_block(void *ptr, t_zone **ret_zone, \
 							t_block **ret_block);
 void					put_size_t_nbr(size_t nbr, size_t base);
-void					check_incoherence(char *provenance);
-void					log_print(char *format, ...);
+void					put_hex_char(unsigned char nbr);
 size_t					get_align(void);
 void					find_or_create_block(t_type type, size_t size, \
 							t_zone **zone, t_block **block);

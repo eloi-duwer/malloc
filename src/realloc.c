@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/14 17:25:29 by marvin            #+#    #+#             */
-/*   Updated: 2021/03/25 10:47:52 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/03/26 12:51:46 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void		*expand_block_or_malloc(void *ptr, t_block *block, size_t size)
 	}
 }
 
-void			*mutexed_realloc(void *ptr, size_t size)
+static void		*mutexed_realloc(void *ptr, size_t size)
 {
 	t_zone	*zones[2];
 	t_block	*blocks[2];
@@ -70,9 +70,21 @@ void			*realloc(void *ptr, size_t size)
 void			*reallocf(void *ptr, size_t size)
 {
 	void	*ret;
+	size_t	align;
 
-	ret = realloc(ptr, size);
-	if (ret == NULL && size != 0)
+	align = get_align();
+	size = (size + align) & ~align;
+	if (ptr == NULL)
+		return (malloc(size));
+	if (size == 0)
+	{
 		free(ptr);
+		return (NULL);
+	}
+	pthread_mutex_lock(&g_mutex);
+	ret = mutexed_realloc(ptr, size);
+	if (ret == NULL && size != 0)
+		mutexed_free(ptr);
+	pthread_mutex_unlock(&g_mutex);
 	return (ret);
 }

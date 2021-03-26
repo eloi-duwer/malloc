@@ -6,7 +6,7 @@
 /*   By: eduwer <eduwer@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/21 20:47:45 by eduwer            #+#    #+#             */
-/*   Updated: 2021/01/21 20:53:37 by eduwer           ###   ########.fr       */
+/*   Updated: 2021/03/26 13:30:24 by eduwer           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,11 @@ void			put_size_t_nbr(size_t nbr, size_t base)
 	if (base == 16)
 		ft_putstr("0x");
 	put_size_t_nbr_recursive(nbr, base);
+}
+
+void			put_hex_char(unsigned char nbr)
+{
+	if (nbr < 16)
+		ft_putchar('0');
+	put_size_t_nbr_recursive((size_t)nbr, 16);
 }
